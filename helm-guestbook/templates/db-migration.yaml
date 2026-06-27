@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration-job
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+  spec:
+    backoffLimit: 2
+    template:
+      spec:
+        containers:
+          - name: db-migration
+            image: busybox
+            command: ["sh", "-c"]
+            args:
+              - |
+                echo "Running database migration..."
+                sleep 10  # Simulate a migration process
+                # Add your database migration commands here
+                # For example, you can use psql to run SQL scripts
+                # psql -h <db_host> -U <db_user> -d <db_name> -f /path/to/migration.sql
+                echo "Database migration completed."
+        restartPolicy: Never
